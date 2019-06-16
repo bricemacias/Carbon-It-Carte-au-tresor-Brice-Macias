@@ -4,7 +4,7 @@ const readlines = require('n-readlines');
 
 /* Décomposition ligne par ligne pour créer un vecteur d'instructions */
 
-const fichier_en_entree = 'Fichiers/Entrée-Grand.txt';
+const fichier_en_entree = 'Fichiers/Entrée.txt';
 
 const liner = new readlines(fichier_en_entree);
 const instructions_initiales = [];

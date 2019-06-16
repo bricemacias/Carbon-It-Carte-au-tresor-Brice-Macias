@@ -119,11 +119,9 @@ async function createMap(des_instructions) {
 
           if (map[element[2]][element[3]].label === 'T') {
             map[element[2]][element[3]].addAventurier(A);
-            //++A.tresors_recoltes;
-            //--map[element[2]][element[3]].nombre_tresors;
-            map_draw[element[2]][element[3]] = `A(${A.tresors_recoltes})T(${
+            map_draw[element[2]][element[3]] = `T(${
               map[element[2]][element[3]].nombre_tresors
-            })`;
+            })+${map[element[2]][element[3]].aventurier.length}A`;
           } else {
             map[element[2]][element[3]] = A;
             map_draw[element[2]][element[3]] = `A(${element[1]})`;
@@ -152,6 +150,11 @@ function vecteursToInstructions(
   vecteur_aventuriers
 ) {
   instructions_finales[0] = ['C', `${x_map_length}`, `${y_map_length}`];
+
+  vecteur_aventuriers.forEach(element => {
+    element.aventurierFaitSonParcours(map, x_map_length, y_map_length);
+  });
+
   vecteur_montagnes.forEach(element => {
     instructions_finales.push([
       'M',
@@ -170,7 +173,6 @@ function vecteursToInstructions(
   });
 
   vecteur_aventuriers.forEach(element => {
-    element.aventurierFaitSonParcours(map, x_map_length, y_map_length);
     instructions_finales.push([
       'A',
       `${element.name}`,
@@ -185,74 +187,73 @@ function vecteursToInstructions(
 
 /* Fonction qui transforme des instructions initiales en instructions finales */
 
-function instructionsInitialesEnFinales(instructions_initiales) {
-  initMap(instructions_initiales)
-    .then(createMap(instructions_initiales))
+function instructionsInitialesEnFinales(des_instructions_initiales) {
+  initMap(des_instructions_initiales)
+    .then(console.log(`Instructions initiales`))
+    .then(console.log(des_instructions_initiales))
     .then(
-      anventuriers.forEach(element => {
-        element.aventurierFaitSonParcours(map, x_map_length, y_map_length);
-      })
-    )
-    .then(vecteursToInstructions(montagnes, tresors, aventuriers));
+      console.log(
+        `
+Map Initialisée avec une taille de ${x_map_length}x${y_map_length}
+`
+      )
+    );
+  if (x_map_length <= 5 && y_map_length) {
+    createMap(des_instructions_initiales)
+      .then(
+        console.log(
+          `
+Premiers pionts placés
+`
+        )
+      )
+      .then(console.log(transpose(map_draw)))
+      .then(
+        console.log(
+          `
+Instructions Finales
+`
+        )
+      )
+      .then(
+        console.log(vecteursToInstructions(montagnes, tresors, aventuriers))
+      )
+      .then(initMap(des_instructions_initiales))
+      .then(
+        createMap(instructions_finales)
+          .then(
+            console.log(
+              `
+Derniers pionts placés
+`
+            )
+          )
+          .then(console.log(transpose(map_draw)))
+      );
+  } else {
+    createMap(des_instructions_initiales)
+      .then(
+        console.log(
+          `
+Premiers pionts placés
+`
+        )
+      )
+      .then(
+        console.log(
+          `
+Instructions Finales
+`
+        )
+      )
+      .then(
+        console.log(vecteursToInstructions(montagnes, tresors, aventuriers))
+      );
+  }
 }
 
 /* Exécution du Script */
 
-initMap(instructions_initiales)
-  .then(console.log(`Instructions initiales`))
-  .then(console.log(instructions_initiales))
-  .then(
-    console.log(
-      `
-Map Initialisée avec une taille de ${x_map_length}x${y_map_length}
-`
-    )
-  )
-  //.then(console.log(transpose(map_draw)))
-  .then(
-    createMap(instructions_initiales).then(
-      console.log(
-        `
-Premiers pionts placés
-`
-      )
-    )
-    //.then(console.log(transpose(map_draw)))
-  )
-  // .then(console.log(aventuriers))
-  // .then(console.log(map[0][0].label))
-  // .then(
-  //   console.log(
-  //     `Vecteur d'étapes final tenant compte de l'orientation ${
-  //       aventuriers[0].orientation
-  //     }`
-  //   )
-  // )
-  // .then(
-  //   console.log(
-  //     aventuriers[0].etapesAvecOrientation(
-  //       aventuriers[0].etapesSansOrientation(
-  //         aventuriers[0].commandes_de_deplacement
-  //       ),
-  //       aventuriers[0].orientation
-  //     )
-  //   )
-  // )
-  // .then(
-  //   console.log(
-  //     aventuriers[0].aventurierFaitSonParcours(map, x_map_length, y_map_length),
-  //     aventuriers[1].aventurierFaitSonParcours(map, x_map_length, y_map_length)
-  //   )
-  // )
-  .then(
-    console.log(
-      `
-Instructions Finales
-`
-    )
-  )
-  .then(console.log(vecteursToInstructions(montagnes, tresors, aventuriers)));
-//.then(console.log(transpose(map_draw)))
-//.then(console.log(instructionFinalesToString(instructions_finales)));
+instructionsInitialesEnFinales(instructions_initiales);
 
 EcrireFichier(instructions_finales);

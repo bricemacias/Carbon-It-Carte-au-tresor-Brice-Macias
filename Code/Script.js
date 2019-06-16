@@ -1,27 +1,14 @@
-const Montagne = require('./Montagne');
-const Tresor = require('./Tresor');
-const Aventurier = require('./Aventurier');
+const Montagne = require('./Pionts/Montagne');
+const Tresor = require('./Pionts/Tresor');
+const Aventurier = require('./Pionts/Aventurier');
 
-/* Modules pour lire le fichier texte ligne par ligne*/
+/* Modules pour tranformer le fichier d'entrée en instructions initiales */
 
-const fs = require('fs');
-const readlines = require('n-readlines');
+const instructions_initiales = require('./ActionsFichiers/LectureFichierEntrée');
 
-/* Décomposition ligne par ligne pour créer un vecteur d'instructions */
+/* Fonction pour tranformer les instructions finales en fichier sortie */
 
-const liner = new readlines('Fichiers/Entrée-Grand.txt');
-const instructions_initiales = [];
-let next;
-
-// Condition pour former le vecteur d'instructions initiales : Il doit contenir une de ces lettres
-let conditions = ['C', 'M', 'T', 'A'];
-
-while ((next = liner.next())) {
-  let next_to_string = next.toString('ascii').split(/ - | -|- |-| /);
-  if (conditions.some(el => next_to_string.includes(el))) {
-    instructions_initiales.push(next_to_string);
-  }
-}
+const EcrireFichier = require('./ActionsFichiers/EcritureFichierSortie');
 
 /* Création de la matrice de la map */
 
@@ -209,25 +196,6 @@ function instructionsInitialesEnFinales(instructions_initiales) {
     .then(vecteursToInstructions(montagnes, tresors, aventuriers));
 }
 
-/* Fonction qui transforme un vecteur d'instructions finales en texte */
-function instructionFinalesToString(instructions_finales) {
-  let string_final = '';
-  instructions_finales.forEach(element => {
-    string_intermediaire = string_final;
-    string_final = string_intermediaire + `${element[0]}`;
-    for (let i = 1; i < element.length; i++) {
-      string_intermediaire = string_final;
-      string_final = string_intermediaire + ` - ${element[i]}`;
-    }
-    string_intermediaire = string_final;
-    string_final =
-      string_intermediaire +
-      `
-`;
-  });
-  return string_final;
-}
-
 /* Exécution du Script */
 
 initMap(instructions_initiales)
@@ -235,13 +203,20 @@ initMap(instructions_initiales)
   .then(console.log(instructions_initiales))
   .then(
     console.log(
-      `Map Initialisée avec une taille de ${x_map_length}x${y_map_length}`
+      `
+Map Initialisée avec une taille de ${x_map_length}x${y_map_length}
+`
     )
   )
   //.then(console.log(transpose(map_draw)))
-  .then(console.log(`Premiers pionts placés`))
   .then(
-    createMap(instructions_initiales)
+    createMap(instructions_initiales).then(
+      console.log(
+        `
+Premiers pionts placés
+`
+      )
+    )
     //.then(console.log(transpose(map_draw)))
   )
   // .then(console.log(aventuriers))
@@ -269,17 +244,15 @@ initMap(instructions_initiales)
   //     aventuriers[1].aventurierFaitSonParcours(map, x_map_length, y_map_length)
   //   )
   // )
-  .then(console.log(vecteursToInstructions(montagnes, tresors, aventuriers)))
-  //.then(console.log(transpose(map_draw)))
-  .then(console.log(instructionFinalesToString(instructions_finales)));
+  .then(
+    console.log(
+      `
+Instructions Finales
+`
+    )
+  )
+  .then(console.log(vecteursToInstructions(montagnes, tresors, aventuriers)));
+//.then(console.log(transpose(map_draw)))
+//.then(console.log(instructionFinalesToString(instructions_finales)));
 
-fs.writeFile(
-  'Fichiers/Sortie.txt',
-
-  `${instructionFinalesToString(instructions_finales)}`,
-
-  function(err) {
-    if (err) throw err;
-    console.log('Fichier Sortie écrit');
-  }
-);
+EcrireFichier(instructions_finales);

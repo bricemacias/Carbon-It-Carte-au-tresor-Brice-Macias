@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node Code/Script.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node Code/Script/Script.js",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "n-readlines": "^1.0.0"
+  },
+  "devDependencies": {
+    "jest": "^24.8.0"
   }
 }

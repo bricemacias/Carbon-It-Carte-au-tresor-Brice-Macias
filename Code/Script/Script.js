@@ -1,14 +1,14 @@
-const Montagne = require('./Pionts/Montagne');
-const Tresor = require('./Pionts/Tresor');
-const Aventurier = require('./Pionts/Aventurier');
+const Montagne = require('../Pionts/Montagne/Montagne');
+const Tresor = require('../Pionts/Tresor/Tresor');
+const Aventurier = require('../Pionts/Aventurier/Aventurier');
 
 /* Modules pour tranformer le fichier d'entrée en instructions initiales */
 
-const instructions_initiales = require('./ActionsFichiers/LectureFichierEntrée');
+const instructions_initiales = require('../ActionsFichiers/LectureFichierEntrée/LectureFichierEntrée');
 
 /* Fonction pour tranformer les instructions finales en fichier sortie */
 
-const EcrireFichier = require('./ActionsFichiers/EcritureFichierSortie');
+const EcrireFichier = require('../ActionsFichiers/EcritureFichierSortie/EcritureFichierSortie');
 
 /* Création de la matrice de la map */
 
@@ -42,7 +42,10 @@ function transpose(une_matrice) {
   });
 }
 
-/* Fonction d'initialisation de la matrice map : recherche d'une instruction commençant par un C dans le fichier d'entrée, puis, dans le cas où plusieurs intructions C seraient présentes, on prend pour chaque instruction celui qui contient le plus grand nombre d'éléments respectivement en x et en y */
+/* Fonction d'initialisation de la matrice map : 
+recherche d'une instruction commençant par un C dans le fichier d'entrée, 
+puis, dans le cas où plusieurs intructions C seraient présentes, 
+on prend pour chaque instruction celui qui contient le plus grand nombre d'éléments respectivement en x et en y */
 
 async function initMap(des_instructions) {
   let max_x = 0;
@@ -230,9 +233,10 @@ function vecteursToInstructions(
   return instructions_finales;
 }
 
-/* Fonction qui execute le code : Si la taille de la carte ne dépasse pas la taille de 5*5, alors la carte est imprimée dans la console. Sinon, seul les instructions initiales et finales sont affichées */
+/* Fonction qui execute le code : Si la taille de la carte ne dépasse pas la taille de 5*5, alors la carte est imprimée dans la console. 
+Sinon, seul les instructions initiales et finales sont affichées */
 
-function Execute(des_instructions_initiales) {
+async function Execute(des_instructions_initiales) {
   initMap(des_instructions_initiales)
     .then(console.log(`Instructions initiales`))
     .then(console.log(des_instructions_initiales))
@@ -302,3 +306,5 @@ Instructions Finales
 Execute(instructions_initiales);
 
 EcrireFichier(instructions_finales);
+
+module.exports = [transpose, Execute];

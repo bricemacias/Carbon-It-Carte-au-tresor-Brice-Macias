@@ -24,11 +24,11 @@ function instructionFinalesToString(des_instructions_finales) {
 
 /* Fonction qui écrit le fichier sortie à partir des instructions finales */
 
-function EcrireFichier(des_des_) {
+async function EcrireFichier(des_instructions_finales) {
   fs.writeFile(
     fichier_en_sortie,
 
-    `${instructionFinalesToString(des_des_)}`,
+    `${instructionFinalesToString(des_instructions_finales)}`,
 
     function(err) {
       if (err) throw err;

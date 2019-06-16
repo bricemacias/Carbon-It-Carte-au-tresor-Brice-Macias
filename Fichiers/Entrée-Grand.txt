@@ -1,0 +1,25 @@
+C - 3000 - 7000
+M - 4 - 5
+M - 2 - 1
+M - 53 - 48
+M - 32 - 57
+T - 0 - 3 - 2
+T - 10 - 60 - 3
+T - 45 - 34 - 2
+T - 24 - 55 - 4
+T - 28 - 17 - 7
+T - 38 - 25 - 4
+T - 18 - 43 - 3
+T - 15 - 25 - 2
+T - 29 - 57 - 5
+A - Lara - 1 - 1 - S - AADADAGGADDAGGGGGADDDAAAAADGDGGDGAAGAG
+A - Boris - 2 -4 - N - AGGDADAAADGDGGDAAADDDGGDDDDAADADADDADGGGGG
+
+# Une Instruction par ligne
+# Chaque instruction est sous-divisée par des -, avec au maximum un espace de chaque côté 
+
+# Format Carte : {C comme Carte} - {Nb. de case en largeur} - {Nb. de case en hauteur}
+# Format Montagne : {M comme Montagne} - {Axe horizontal} - {Axe vertical}
+# Format Trésor : {T comme Trésor} - {Axe horizontal} - {Axe vertical} - {Nb. de trésors}
+# Format Aventurier : {A comme Aventurier} - {Nom de l’aventurier} - {Axe horizontal} - {Axe
+vertical} - {Orientation} - {Séquence de mouvement}

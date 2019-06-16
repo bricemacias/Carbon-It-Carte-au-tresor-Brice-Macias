@@ -1,0 +1,18 @@
+C - 3 - 4
+C - 4 - 5
+M - 1 - 0
+M - 2 - 1
+T - 0 - 3 - 2
+T - 1 - 3 - 3
+T - 2 - 2 -4
+A - Lara - 1 - 1 - S - AADADAGGA
+A - Boris - 2 -4 - N - AGGDADA
+
+# Une Instruction par ligne
+# Chaque instruction est sous-divisée par des -, avec au maximum un espace de chaque côté 
+
+# Format Carte : {C comme Carte} - {Nb. de case en largeur} - {Nb. de case en hauteur}
+# Format Montagne : {M comme Montagne} - {Axe horizontal} - {Axe vertical}
+# Format Trésor : {T comme Trésor} - {Axe horizontal} - {Axe vertical} - {Nb. de trésors}
+# Format Aventurier : {A comme Aventurier} - {Nom de l’aventurier} - {Axe horizontal} - {Axe
+vertical} - {Orientation} - {Séquence de mouvement}

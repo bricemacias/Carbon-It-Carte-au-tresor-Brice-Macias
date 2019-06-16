@@ -49,16 +49,18 @@ async function initMap(des_instructions) {
   let max_y = 0;
   des_instructions.forEach(element => {
     if (element.includes('C')) {
-      if (max_x > element[1]) {
+      let [taille_x, taille_y] = [parseInt(element[1]), parseInt(element[2])];
+
+      if (max_x > taille_x) {
         x_map_length = max_x;
-      } else if (max_x <= element[1]) {
-        max_x = element[1];
+      } else if (max_x <= taille_x) {
+        max_x = taille_x;
         x_map_length = max_x;
       }
-      if (max_y > element[2]) {
+      if (max_y > taille_y) {
         y_map_length = max_y;
-      } else if (max_y <= element[2]) {
-        max_y = element[2];
+      } else if (max_y <= taille_y) {
+        max_y = taille_y;
         y_map_length = max_y;
       }
 
@@ -77,63 +79,106 @@ async function initMap(des_instructions) {
   return [map, map_draw];
 }
 
-/* Fonction qui place les premiers éléments sur la map */
+/* Fonction qui place les éléments sur la map à partir d'instructions */
 
 async function createMap(des_instructions) {
   des_instructions.forEach(element => {
     switch (element[0]) {
       case 'M':
-        map[element[1]][element[2]] = new Montagne(element[1], element[2]);
+        let [une_position_montagne_x, une_position_montagne_y] = [
+          parseInt(element[1]),
+          parseInt(element[2])
+        ];
+        let Une_Case_Montagne = new Montagne(
+          une_position_montagne_x,
+          une_position_montagne_y
+        );
+        map[une_position_montagne_x][une_position_montagne_y] = new Montagne(
+          une_position_montagne_x,
+          une_position_montagne_y
+        );
 
-        montagnes.push(map[element[1]][element[2]]);
+        montagnes.push(Une_Case_Montagne);
 
-        map_draw[element[1]][element[2]] = '  M     ';
+        map_draw[une_position_montagne_x][une_position_montagne_y] = '  M     ';
         break;
       case 'T':
-        if (map[element[1]][element[2]] === 0) {
-          map[element[1]][element[2]] = new Tresor(
-            parseInt(element[1]),
-            parseInt(element[2]),
-            parseInt(element[3])
+        let [
+          une_position_tresor_x,
+          une_position_tresor_y,
+          un_nombre_de_tresors
+        ] = [parseInt(element[1]), parseInt(element[2]), parseInt(element[3])];
+        if (map[une_position_tresor_x][une_position_tresor_y] === 0) {
+          let Une_Case_Tresor = new Tresor(
+            une_position_tresor_x,
+            une_position_tresor_y,
+            un_nombre_de_tresors
           );
+          map[une_position_tresor_x][une_position_tresor_y] = Une_Case_Tresor;
 
-          tresors.push(map[element[1]][element[2]]);
+          tresors.push(Une_Case_Tresor);
 
-          map_draw[element[1]][element[2]] = `  T(${element[3]})  `;
+          map_draw[une_position_tresor_x][
+            une_position_tresor_y
+          ] = `  T(${un_nombre_de_tresors})  `;
         }
         break;
       case 'A':
+        let [
+          un_nom,
+          une_position_aventurier_x,
+          une_position_aventurier_y,
+          une_orientation,
+          des_commandes_de_deplacement
+        ] = [
+          element[1],
+          parseInt(element[2]),
+          parseInt(element[3]),
+          element[4],
+          element[5]
+        ];
         if (
-          map[element[2]][element[3]] === 0 ||
-          map[element[2]][element[3]].label === 'T'
+          map[une_position_aventurier_x][une_position_aventurier_y] === 0 ||
+          map[une_position_aventurier_x][une_position_aventurier_y].label ===
+            'T'
         ) {
-          let A = new Aventurier(
+          let Un_Aventurier = new Aventurier(
             element[1],
-            parseInt(element[2]),
-            parseInt(element[3]),
+            parseInt(une_position_aventurier_x),
+            parseInt(une_position_aventurier_y),
             element[4],
             element[5]
           );
 
-          aventuriers.push(A);
+          aventuriers.push(Un_Aventurier);
 
-          if (map[element[2]][element[3]].label === 'T') {
-            map[element[2]][element[3]].addAventurier(A);
-            map_draw[element[2]][element[3]] = `T(${
-              map[element[2]][element[3]].nombre_tresors
-            })+${map[element[2]][element[3]].aventurier.length}A`;
+          // Si la case est une case Trésor, alors on fait cohabiter Trésor et aventurier et on le note sous la forme T(nombre_de_trésors_sur_la_case)+{nombre_d_aventuriers_sur_la_case}A
+          if (
+            map[une_position_aventurier_x][une_position_aventurier_y].label ===
+            'T'
+          ) {
+            map[une_position_aventurier_x][
+              une_position_aventurier_y
+            ].addAventurier(Un_Aventurier);
+            map_draw[une_position_aventurier_x][
+              une_position_aventurier_y
+            ] = `T(${
+              map[une_position_aventurier_x][une_position_aventurier_y]
+                .nombre_tresors
+            })+${
+              map[une_position_aventurier_x][une_position_aventurier_y]
+                .aventurier.length
+            }A`;
+
+            // Sinon, on rajoute juste l'aventurier sur la case
           } else {
-            map[element[2]][element[3]] = A;
-            map_draw[element[2]][element[3]] = `A(${element[1]})`;
+            map[une_position_aventurier_x][
+              une_position_aventurier_y
+            ] = Un_Aventurier;
+            map_draw[une_position_aventurier_x][
+              une_position_aventurier_y
+            ] = `A(${un_nom})`;
           }
-        } else if (map[element[2]][element[3]].label === 'T') {
-          let A = new Aventurier(
-            element[1],
-            parseInt(element[2]),
-            parseInt(element[3]),
-            element[4],
-            element[5]
-          );
         }
 
         break;
@@ -185,9 +230,9 @@ function vecteursToInstructions(
   return instructions_finales;
 }
 
-/* Fonction qui transforme des instructions initiales en instructions finales */
+/* Fonction qui execute le code : Si la taille de la carte ne dépasse pas la taille de 5*5, alors la carte est imprimée dans la console. Sinon, seul les instructions initiales et finales sont affichées */
 
-function instructionsInitialesEnFinales(des_instructions_initiales) {
+function Execute(des_instructions_initiales) {
   initMap(des_instructions_initiales)
     .then(console.log(`Instructions initiales`))
     .then(console.log(des_instructions_initiales))
@@ -254,6 +299,6 @@ Instructions Finales
 
 /* Exécution du Script */
 
-instructionsInitialesEnFinales(instructions_initiales);
+Execute(instructions_initiales);
 
 EcrireFichier(instructions_finales);

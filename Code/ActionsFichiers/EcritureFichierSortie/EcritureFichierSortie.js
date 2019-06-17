@@ -36,7 +36,9 @@ async function EcrireFichier(des_instructions_finales) {
 
     function(err) {
       if (err) throw err;
-      console.log('Fichier Sortie écrit');
+      console.log(`
+Fichier Sortie écrit
+`);
     }
   );
 }

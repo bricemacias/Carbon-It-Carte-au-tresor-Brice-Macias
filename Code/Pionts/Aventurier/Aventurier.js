@@ -7,6 +7,24 @@ class Aventurier {
     this.commandes_de_deplacement = commandes_de_deplacement;
     this.etapes_avec_oriention = [];
     this.tresors_recoltes = 0;
+    this.aventuriers_voisins = [];
+  }
+
+  addAventurier(un_aventurier) {
+    this.aventuriers_voisins.push(un_aventurier);
+    if (this.label === 'A') {
+      this.label = 'A+A';
+    }
+  }
+
+  removeAventurier(un_aventurier) {
+    this.aventuriers_voisins.splice(
+      this.aventuriers_voisins.indexOf(un_aventurier),
+      1
+    );
+    if (this.aventuriers_voisins.length === 0) {
+      this.label = 'A';
+    }
   }
 
   /* Fonction permettant de transformer les commandes de déplacements en un vecteur d'étapes */
@@ -82,7 +100,7 @@ class Aventurier {
 
   /* Fonction permettant à aventurier de faire son parcours */
 
-  aventurierFaitSonParcours(map, x_map_length, y_map_length) {
+  aventurierFaitSonParcours(map, map_draw, x_map_length, y_map_length) {
     let [x, y] = [this.position[0], this.position[1]];
 
     // On crée un vecteur d'étapes prenant compte de l'orientation
@@ -101,17 +119,49 @@ class Aventurier {
           ) {
             // Si pas de montagne en face, et dans les rebords de la map, on regarde si on se trouve déja sur une case trésor, auquel cas on retire l'aventurier de la case trésor avant d'avancer
             if (map[this.position[0]][this.position[1]].label === 'T+A') {
-              map[this.position[0]][this.position[1]].removeAventurier();
+              map[this.position[0]][this.position[1]].removeAventurier(this);
+
+              if (map[this.position[0]][this.position[1]].label === 'T+A') {
+                map_draw[this.position[0]][this.position[1]] = ` T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })+${
+                  map[this.position[0]][this.position[1]].aventuriers_sur_case
+                }A `;
+              } else if (
+                map[this.position[0]][this.position[1]].label === 'T'
+              ) {
+                map_draw[this.position[0]][this.position[1]] = `  T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })  `;
+              }
             }
             this.position[1] = --y;
 
             // Si la prochaine case est une case trésor, on ajoute un aventurier à la case (aventurier et trésor cohabitent) puis si le nombre de trésors présents sur la case n'est pas nul, l'aventurier récolte un trésor
-            if (map[this.position[0]][this.position[1]].label === 'T') {
+            if (
+              map[this.position[0]][this.position[1]].label === 'T' ||
+              map[this.position[0]][this.position[1]].label === 'T+A'
+            ) {
               map[this.position[0]][this.position[1]].addAventurier(this);
               if (map[this.position[0]][this.position[1]].nombre_tresors > 0) {
                 --map[this.position[0]][this.position[1]].nombre_tresors;
                 ++this.tresors_recoltes;
+
+                map_draw[this.position[0]][this.position[1]] = ` T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })+${
+                  map[this.position[0]][this.position[1]].aventuriers_sur_case
+                }A `;
               }
+            }
+
+            // Si la prochaine case est une case aventurier, on ajoute un aventurier à la case (2 aventuriers cohabitent)
+            else if (map[this.position[0]][this.position[1]].label === 'A') {
+              map[this.position[0]][this.position[1]].addAventurier(this);
+
+              map_draw[this.position[0]][this.position[1]] = `${
+                map[this.position[0]][this.position[1]].aventuriers_sur_case
+              }A `;
             }
           }
           break;
@@ -121,16 +171,45 @@ class Aventurier {
             map[this.position[0]][this.position[1] + 1].label !== 'M'
           ) {
             if (map[this.position[0]][this.position[1]].label === 'T+A') {
-              map[this.position[0]][this.position[1]].removeAventurier();
+              map[this.position[0]][this.position[1]].removeAventurier(this);
+
+              if (map[this.position[0]][this.position[1]].label === 'T+A') {
+                map_draw[this.position[0]][this.position[1]] = ` T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })+${
+                  map[this.position[0]][this.position[1]].aventuriers_sur_case
+                }A `;
+              } else if (
+                map[this.position[0]][this.position[1]].label === 'T'
+              ) {
+                map_draw[this.position[0]][this.position[1]] = `  T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })  `;
+              }
             }
             this.position[1] = ++y;
 
-            if (map[this.position[0]][this.position[1]].label === 'T') {
+            if (
+              map[this.position[0]][this.position[1]].label === 'T' ||
+              map[this.position[0]][this.position[1]].label === 'T+A'
+            ) {
               map[this.position[0]][this.position[1]].addAventurier(this);
               if (map[this.position[0]][this.position[1]].nombre_tresors > 0) {
                 --map[this.position[0]][this.position[1]].nombre_tresors;
                 ++this.tresors_recoltes;
+
+                map_draw[this.position[0]][this.position[1]] = ` T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })+${
+                  map[this.position[0]][this.position[1]].aventuriers_sur_case
+                }A `;
               }
+            } else if (map[this.position[0]][this.position[1]].label === 'A') {
+              map[this.position[0]][this.position[1]].addAventurier(this);
+
+              map_draw[this.position[0]][this.position[1]] = `${
+                map[this.position[0]][this.position[1]].aventuriers_sur_case
+              }A `;
             }
           }
           break;
@@ -140,16 +219,44 @@ class Aventurier {
             map[this.position[0] + 1][this.position[1]].label !== 'M'
           ) {
             if (map[this.position[0]][this.position[1]].label === 'T+A') {
-              map[this.position[0]][this.position[1]].removeAventurier();
+              map[this.position[0]][this.position[1]].removeAventurier(this);
+
+              if (map[this.position[0]][this.position[1]].label === 'T+A') {
+                map_draw[this.position[0]][this.position[1]] = ` T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })+${
+                  map[this.position[0]][this.position[1]].aventuriers_sur_case
+                }A `;
+              } else if (
+                map[this.position[0]][this.position[1]].label === 'T'
+              ) {
+                map_draw[this.position[0]][this.position[1]] = `  T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })  `;
+              }
             }
             this.position[0] = ++x;
-
-            if (map[this.position[0]][this.position[1]].label === 'T') {
+            if (
+              map[this.position[0]][this.position[1]].label === 'T' ||
+              map[this.position[0]][this.position[1]].label === 'T+A'
+            ) {
               map[this.position[0]][this.position[1]].addAventurier(this);
               if (map[this.position[0]][this.position[1]].nombre_tresors > 0) {
                 --map[this.position[0]][this.position[1]].nombre_tresors;
                 ++this.tresors_recoltes;
+
+                map_draw[this.position[0]][this.position[1]] = ` T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })+${
+                  map[this.position[0]][this.position[1]].aventuriers_sur_case
+                }A `;
               }
+            } else if (map[this.position[0]][this.position[1]].label === 'A') {
+              map[this.position[0]][this.position[1]].addAventurier(this);
+
+              map_draw[this.position[0]][this.position[1]] = `${
+                map[this.position[0]][this.position[1]].aventuriers_sur_case
+              }A `;
             }
           }
           break;
@@ -159,22 +266,51 @@ class Aventurier {
             map[this.position[0] - 1][this.position[1]].label !== 'M'
           ) {
             if (map[this.position[0]][this.position[1]].label === 'T+A') {
-              map[this.position[0]][this.position[1]].removeAventurier();
+              map[this.position[0]][this.position[1]].removeAventurier(this);
+
+              if (map[this.position[0]][this.position[1]].label === 'T+A') {
+                map_draw[this.position[0]][this.position[1]] = ` T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })+${
+                  map[this.position[0]][this.position[1]].aventuriers_sur_case
+                }A `;
+              } else if (
+                map[this.position[0]][this.position[1]].label === 'T'
+              ) {
+                map_draw[this.position[0]][this.position[1]] = `  T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })  `;
+              }
             }
             this.position[0] = --x;
 
-            if (map[this.position[0]][this.position[1]].label === 'T') {
+            if (
+              map[this.position[0]][this.position[1]].label === 'T' ||
+              map[this.position[0]][this.position[1]].label === 'T+A'
+            ) {
               map[this.position[0]][this.position[1]].addAventurier(this);
               if (map[this.position[0]][this.position[1]].nombre_tresors > 0) {
                 --map[this.position[0]][this.position[1]].nombre_tresors;
                 ++this.tresors_recoltes;
+
+                map_draw[this.position[0]][this.position[1]] = ` T(${
+                  map[this.position[0]][this.position[1]].nombre_tresors
+                })+${
+                  map[this.position[0]][this.position[1]].aventuriers_sur_case
+                }A `;
               }
+            } else if (map[this.position[0]][this.position[1]].label === 'A') {
+              map[this.position[0]][this.position[1]].addAventurier(this);
+
+              map_draw[this.position[0]][this.position[1]] = `${
+                map[this.position[0]][this.position[1]].aventuriers_sur_case
+              }A `;
             }
           }
           break;
       }
     }
-    return this;
+    return [this, map_draw];
   }
 }
 

@@ -3,17 +3,24 @@ class Tresor {
     this.label = 'T';
     this.position = [x, y];
     this.nombre_tresors = nombre_tresors;
-    this.aventurier = [];
+    this.aventuriers_sur_case = [];
   }
 
   addAventurier(aventurier) {
-    this.aventurier.push(aventurier);
-    this.label = 'T+A';
+    this.aventuriers_sur_case.push(aventurier);
+    if (this.label === 'T') {
+      this.label = 'T+A';
+    }
   }
 
-  removeAventurier() {
-    this.aventurier.pop();
-    this.label = 'T';
+  removeAventurier(aventurier) {
+    this.aventuriers_sur_case.splice(
+      this.aventuriers_sur_case.indexOf(aventurier),
+      1
+    );
+    if (this.aventuriers_sur_case.length === 0) {
+      this.label = 'T';
+    }
   }
 }
 

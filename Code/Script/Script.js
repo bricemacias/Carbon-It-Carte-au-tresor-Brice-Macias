@@ -172,7 +172,7 @@ async function createMap(des_instructions) {
                 .nombre_tresors
             })+${
               map[une_position_aventurier_x][une_position_aventurier_y]
-                .aventurier.length
+                .aventuriers_sur_case.length
             }A`;
 
             // Sinon, on rajoute juste l'aventurier sur la case
@@ -202,7 +202,12 @@ function vecteursToInstructions(
   instructions_finales[0] = ['C', `${x_map_length}`, `${y_map_length}`];
 
   vecteur_aventuriers.forEach(element => {
-    element.aventurierFaitSonParcours(map, x_map_length, y_map_length);
+    element.aventurierFaitSonParcours(
+      map,
+      map_draw,
+      x_map_length,
+      y_map_length
+    );
   });
 
   vecteur_montagnes.forEach(element => {
@@ -240,7 +245,11 @@ Sinon, seul les instructions initiales et finales sont affichées */
 
 async function Execute(des_instructions_initiales) {
   initMap(des_instructions_initiales)
-    .then(console.log(`Instructions initiales`))
+    .then(
+      console.log(`
+Instructions initiales
+`)
+    )
     .then(console.log(des_instructions_initiales))
     .then(
       console.log(
@@ -249,7 +258,7 @@ Map Initialisée avec une taille de ${x_map_length}x${y_map_length}
 `
       )
     );
-  if (x_map_length <= 5 && y_map_length) {
+  if (x_map_length <= 5 && y_map_length <= 5) {
     createMap(des_instructions_initiales)
       .then(
         console.log(

@@ -54,3 +54,5 @@ test('testing etapesAvecOrientation', () => {
     )
   ).toMatchObject(['Left', 'Left', 'Up', 'Down', 'Left', 'Up', 'Down']);
 });
+
+/* Développement en cours */

@@ -1,4 +1,8 @@
+/* Module pour écrire le fichier sortie */
+
 const fs = require('fs');
+
+/* Emplacement du fichier sortie */
 
 const fichier_en_sortie = 'Fichiers/Sortie.txt';
 

@@ -1,3 +1,5 @@
+/* Modules pour les différents pionts */
+
 const Montagne = require('../Pionts/Montagne/Montagne');
 const Tresor = require('../Pionts/Tresor/Tresor');
 const Aventurier = require('../Pionts/Aventurier/Aventurier');
@@ -307,4 +309,4 @@ Execute(instructions_initiales);
 
 EcrireFichier(instructions_finales);
 
-module.exports = [transpose, Execute];
+module.exports = [transpose, vecteursToInstructions];

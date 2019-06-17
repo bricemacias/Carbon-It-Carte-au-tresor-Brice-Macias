@@ -1,4 +1,4 @@
-/* Modules pour lire le fichier texte ligne par ligne*/
+/* Module pour lire le fichier texte ligne par ligne*/
 
 const readlines = require('n-readlines');
 
